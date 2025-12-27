@@ -1,5 +1,7 @@
 module Main where
 
+import PBKDF2 (withKdfCtx)
+
 -- | Reference: def _calc_entropy(password_profile, master_password):
 -- | salt = (
 -- | password_profile["site"]
@@ -11,4 +13,4 @@ module Main where
 -- |     ).hex()
 -- |     return int(hex_entropy, 16)
 main :: IO ()
-main = putStrLn "Hello, Haskell!"
+main = withKdfCtx "pbkdf2" print
