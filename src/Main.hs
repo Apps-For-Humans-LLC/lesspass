@@ -1,6 +1,6 @@
 module Main where
 
-import PBKDF2 (withKdfCtx)
+import PBKDF2 (pbkdf2)
 
 -- | Reference: def _calc_entropy(password_profile, master_password):
 -- | salt = (
@@ -13,4 +13,4 @@ import PBKDF2 (withKdfCtx)
 -- |     ).hex()
 -- |     return int(hex_entropy, 16)
 main :: IO ()
-main = withKdfCtx "pbkdf2" print
+main = pbkdf2 "abcd" "ab2"

@@ -1,29 +1,39 @@
-#include "openssl/params.h"
+#include "ossl_param.h"
+#include <openssl/core.h>
+#include <openssl/core_names.h>
+#include <openssl/kdf.h>
+#include <openssl/params.h>
 #include <stdlib.h>
+#include <string.h>
 
-OSSL_PARAM *ffi_OSSL_PARAM_construct_utf8_string(const char *key, char *buf) {
-  OSSL_PARAM *p = (OSSL_PARAM *)malloc(sizeof(OSSL_PARAM));
-  if (p) {
-    *p = OSSL_PARAM_construct_utf8_string(key, buf, 0);
+OSSL_PARAM *make_pbkdf2_params(char *pass, char *salt) {
+  OSSL_PARAM *out = (OSSL_PARAM *)calloc(5, sizeof(OSSL_PARAM));
+  unsigned int *iter = malloc(sizeof(unsigned int));
+  *iter = 100000;
+  if (out && iter) {
+    out[0] = OSSL_PARAM_construct_octet_string(OSSL_KDF_PARAM_PASSWORD, pass,
+                                               strlen(pass));
+    out[1] = OSSL_PARAM_construct_octet_string(OSSL_KDF_PARAM_SALT, salt,
+                                               strlen(salt));
+    out[2] = OSSL_PARAM_construct_uint(OSSL_KDF_PARAM_ITER, iter);
+    out[3] =
+        OSSL_PARAM_construct_utf8_string(OSSL_KDF_PARAM_DIGEST, "SHA256", 0);
+    out[4] = OSSL_PARAM_construct_end();
+    return out;
   }
-  return p;
+
+  if (iter)
+    free(iter);
+  if (out)
+    free(out);
+  return NULL;
 }
 
-OSSL_PARAM *ffi_OSSL_PARAM_construct_octet_string(const char *key, char *buf,
-                                                  size_t len) {
-  OSSL_PARAM *p = (OSSL_PARAM *)malloc(sizeof(OSSL_PARAM));
-  if (p) {
-    *p = OSSL_PARAM_construct_octet_string(key, buf, len);
-  }
-  return p;
-}
-
-OSSL_PARAM *ffi_combine_ossl_params(int n, OSSL_PARAM **ptrs) {
-  OSSL_PARAM *array = malloc(sizeof(OSSL_PARAM) * n);
-  if (array) {
-    for (int i = 0; i < n; i++) {
-      array[i] = *ptrs[i];
+void free_pbkdf2_params(OSSL_PARAM *params) {
+  if (params) {
+    if (params[2].data) {
+      free(params[2].data);
     }
+    free(params);
   }
-  return array;
 }

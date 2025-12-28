@@ -1,2 +1,2 @@
-- Implement OSSL_PARAM interface
-- Move PBKDF2 and OSSL_PARAM Implementations to their own library
+- Convert pbkdf2 result to hex.
+- Follow code in /home/deck/Projects/hslesspass/ref/venv/lib/python3.13/site-packages/lesspass/password.py
