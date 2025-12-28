@@ -1,4 +1,7 @@
 cradle:
-  cabal:
-    - path: "./src"
-      component: "exe:hslesspass"
+  direct:
+    arguments:
+      - -Wall
+      - -isrc
+      - -Icsrc
+      - -optc-Icsrc
