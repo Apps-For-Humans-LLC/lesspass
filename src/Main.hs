@@ -1,16 +1,32 @@
 module Main where
 
-import PBKDF2 (pbkdf2)
+import Password (Profile (..), defaultProfile, generatePassword)
+import System.Console.GetOpt
+import System.Environment (getArgs, getProgName)
+import System.Exit (exitFailure)
+import System.IO (hPutStrLn, stderr)
 
--- | Reference: def _calc_entropy(password_profile, master_password):
--- | salt = (
--- | password_profile["site"]
--- |     + password_profile["login"]
--- |     + hex(password_profile["counter"])[2:]
--- |     )
--- |     hex_entropy = hashlib.pbkdf2_hmac(
--- |     "sha256", master_password.encode("utf-8"), salt.encode("utf-8"), 100000, 32
--- |     ).hex()
--- |     return int(hex_entropy, 16)
+options :: [OptDescr (Profile -> Profile)]
+options =
+  [ Option
+      ['l']
+      ["length"]
+      (ReqArg (\len profile -> profile {passwordLength = read len}) "LENGTH")
+      "Generated password length"
+  ]
+
+parseArgs :: [String] -> IO (Profile, [String])
+parseArgs argv =
+  case getOpt Permute options argv of
+    (o, n, []) -> return (foldl (flip id) defaultProfile o, n)
+    (_, _, errs) -> do
+      hPutStrLn stderr (concat errs ++ usageInfo header options)
+      exitFailure
+  where
+    header = "Usage: hslp [-l] site login"
+
 main :: IO ()
-main = pbkdf2 "abcd" "ab2"
+main = do
+  (opts, positional) <- getArgs >>= parseArgs
+  print opts
+  print positional
