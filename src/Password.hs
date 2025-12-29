@@ -1,38 +1,9 @@
 module Password
   ( generatePassword,
-    Profile (..),
-    defaultProfile,
   )
 where
 
 import PBKDF2 (pbkdf2)
-
-data Profile = Profile
-  { useLowercase :: Bool,
-    useUppercase :: Bool,
-    useDigits :: Bool,
-    useSymbols :: Bool,
-    passwordLength :: Int,
-    passwordCounter :: Int,
-    site :: String,
-    login :: String,
-    exclude :: String
-  }
-  deriving (Show)
-
-defaultProfile :: Profile
-defaultProfile =
-  Profile
-    { useLowercase = True,
-      useUppercase = True,
-      useSymbols = True,
-      useDigits = True,
-      passwordLength = 16,
-      passwordCounter = 1,
-      site = "",
-      login = "",
-      exclude = ""
-    }
 
 lowercase :: String
 lowercase = "abcdefghijklmnopqrstuvwxyz"
@@ -62,5 +33,5 @@ generatePassword :: String -> String -> IO String
 generatePassword pass salt = do
   entropy <- pbkdf2 pass salt
   putStrLn defaultCharset
-  let (generatedPassword, passwordEntropy) = consumeEntropy "" entropy defaultCharset 20
+  let (generatedPassword, _) = consumeEntropy "" entropy defaultCharset 20
   return generatedPassword
