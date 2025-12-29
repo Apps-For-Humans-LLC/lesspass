@@ -1,34 +1,8 @@
 module Main where
 
+import Password
 import System.Console.GetOpt
 import System.Environment (getArgs)
-
-data Profile = Profile
-  { useLowercase :: Bool,
-    useUppercase :: Bool,
-    useDigits :: Bool,
-    useSymbols :: Bool,
-    passwordLength :: Int,
-    passwordCounter :: Int,
-    site :: String,
-    login :: String,
-    exclude :: String
-  }
-  deriving (Show)
-
-defaultProfile :: Profile
-defaultProfile =
-  Profile
-    { useLowercase = True,
-      useUppercase = True,
-      useSymbols = True,
-      useDigits = True,
-      passwordLength = 16,
-      passwordCounter = 1,
-      site = "",
-      login = "",
-      exclude = ""
-    }
 
 options :: [OptDescr (Profile -> Profile)]
 options =
@@ -62,4 +36,5 @@ main = do
   args <- getArgs
   (profile, positional) <- parseArgs args
   let finalProfile = assignPositionalArgs profile positional
-  print finalProfile
+  password <- generatePassword finalProfile "abcd"
+  putStrLn password
