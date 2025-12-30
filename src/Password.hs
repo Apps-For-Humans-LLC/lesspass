@@ -24,10 +24,10 @@ data Profile = Profile
 defaultProfile :: Profile
 defaultProfile =
   Profile
-    { useLowercase = True,
-      useUppercase = True,
-      useSymbols = True,
-      useDigits = True,
+    { useLowercase = False,
+      useUppercase = False,
+      useSymbols = False,
+      useDigits = False,
       passwordLength = 16,
       passwordCounter = 1,
       site = "",
@@ -71,13 +71,6 @@ getCharsets profile =
       charsets = map (\(fn, chars) -> if fn profile then chars else "") ruleChecks
    in filter (not . null) charsets
 
--- countRules :: Profile -> Int
--- countRules profile =
---   (fromEnum . useLowercase) profile
---     + (fromEnum . useUppercase) profile
---     + (fromEnum . useDigits) profile
---     + (fromEnum . useSymbols) profile
---
 getCharsForRules :: Integer -> [String] -> (String, Integer)
 getCharsForRules entropy =
   foldl'

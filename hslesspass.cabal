@@ -66,6 +66,7 @@ executable hslesspass
     other-modules:    PBKDF2
                       ForeignPtr
                       Password
+                      Password.Read
 
     -- Libraries to link against
     extra-libraries: crypto
